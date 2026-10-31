@@ -1,0 +1,23 @@
+node_modules
+dist
+dist-ssr
+release
+*.local
+.DS_Store
+.vite
+
+# Rust / Tauri
+src-tauri/target
+src-tauri/gen
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Exports / scratch
+/exports
+*.log
+
+# Build state
+*.tsbuildinfo

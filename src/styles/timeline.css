@@ -1,0 +1,335 @@
+/* =====================================================================
+   Multitrack timeline
+   ===================================================================== */
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-1);
+  border-top: 1px solid var(--border);
+  min-height: 0;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.timeline-toolbar {
+  height: 30px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+}
+.timeline-toolbar .sep {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+  margin: 0 3px;
+}
+.timeline-toolbar .zoom-label {
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  min-width: 42px;
+  text-align: right;
+}
+
+.timeline-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Track headers column */
+.track-headers {
+  width: 168px;
+  flex-shrink: 0;
+  background: var(--bg-2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.track-headers-spacer {
+  height: 26px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 9px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-weight: 700;
+}
+.track-header-list {
+  flex: 1;
+  overflow: hidden;
+}
+.track-header {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 6px;
+  border-bottom: 1px solid var(--border-soft);
+  cursor: pointer;
+  font-size: var(--fs-xs);
+  color: var(--text-2);
+  background: var(--bg-1);
+}
+.track-header:hover {
+  background: var(--bg-hover);
+}
+.track-header.selected {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.track-header .name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-sm);
+}
+.track-header .type-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Ruler + tracks scroll area */
+.timeline-scroll {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: auto;
+  position: relative;
+  min-width: 0;
+}
+.timeline-inner {
+  position: relative;
+  min-width: 100%;
+}
+
+.ruler {
+  height: 26px;
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  overflow: hidden;
+}
+.ruler-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid var(--border);
+}
+.ruler-label {
+  position: absolute;
+  top: 3px;
+  font-size: 9px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  padding-left: 3px;
+  pointer-events: none;
+}
+.ruler-beat {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  height: 6px;
+  background: var(--border-strong);
+}
+.ruler-beat.downbeat {
+  height: 11px;
+  background: var(--violet-line);
+}
+.ruler-marker {
+  position: absolute;
+  bottom: 0;
+  width: 2px;
+  height: 100%;
+  background: var(--warn);
+}
+
+/* Tracks */
+.tracks {
+  position: relative;
+}
+.track-lane {
+  height: 30px;
+  position: relative;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-0);
+}
+.track-lane:nth-child(even) {
+  background: #0a0c0f;
+}
+.track-lane.selected {
+  background: rgba(34, 211, 238, 0.045);
+}
+.track-lane.drop-target {
+  background: rgba(34, 211, 238, 0.1);
+}
+
+.clip {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 4px;
+  border: 1px solid;
+  overflow: hidden;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  white-space: nowrap;
+  user-select: none;
+}
+.clip:active {
+  cursor: grabbing;
+}
+.clip.selected {
+  box-shadow: 0 0 0 1px var(--accent), 0 0 10px rgba(34, 211, 238, 0.28);
+  z-index: 3;
+}
+.clip-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+.clip-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  cursor: ew-resize;
+}
+.clip-handle.l {
+  left: 0;
+}
+.clip-handle.r {
+  right: 0;
+}
+
+/* Waveform clip */
+.clip-waveform {
+  position: absolute;
+  inset: 0;
+  opacity: 0.85;
+}
+
+/* Keyframe diamonds */
+.keyframe-lane {
+  position: relative;
+  height: 12px;
+  border-bottom: 1px solid var(--border-soft);
+  background: #0c0e12;
+}
+.keyframe {
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  background: var(--violet);
+  border: 1px solid #c4b5fd;
+  transform: rotate(45deg);
+  cursor: pointer;
+  border-radius: 1px;
+}
+.keyframe:hover {
+  background: #c4b5fd;
+}
+.keyframe.selected {
+  background: var(--accent);
+  border-color: #a5f3fc;
+  box-shadow: 0 0 8px var(--accent);
+}
+.keyframe-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(139, 92, 246, 0.28);
+  pointer-events: none;
+}
+
+/* Playhead */
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--accent);
+  z-index: 8;
+  pointer-events: none;
+  box-shadow: 0 0 7px rgba(34, 211, 238, 0.75);
+}
+.playhead::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -4.5px;
+  width: 10px;
+  height: 8px;
+  background: var(--accent);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* Loop region */
+.loop-region {
+  position: absolute;
+  top: 26px;
+  bottom: 0;
+  background: rgba(34, 211, 238, 0.06);
+  border-left: 1px solid var(--accent-line);
+  border-right: 1px solid var(--accent-line);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Beat grid overlay */
+.beat-grid-line {
+  position: absolute;
+  top: 26px;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.035);
+  pointer-events: none;
+}
+.beat-grid-line.downbeat {
+  background: rgba(139, 92, 246, 0.14);
+}
+
+/* Automation lane */
+.automation-lane {
+  height: 44px;
+  position: relative;
+  border-bottom: 1px solid var(--border-soft);
+  background: #0a0c0f;
+}
+.automation-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.timeline-tracks-wrap {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+}

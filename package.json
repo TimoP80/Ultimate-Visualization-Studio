@@ -1,0 +1,74 @@
+{
+  "name": "ultimate-viz-studio",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Ultimate Visualization Studio - professional audio visualization & music video production",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit false --emitDeclarationOnly false --pretty",
+    "test": "node --test tests/geometry.test.ts",
+    "verify:interaction": "node scripts/verify-interaction.mjs",
+    "tauri": "tauri",
+    "electron": "electron .",
+    "electron:dev": "node scripts/electron-dev.mjs",
+    "electron:pack": "npm run build && electron-builder --win --dir",
+    "electron:dist": "npm run build && electron-builder --win"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@tauri-apps/api": "^2.9.0",
+    "@tauri-apps/plugin-dialog": "^2.4.0",
+    "@tauri-apps/plugin-fs": "^2.4.0",
+    "@tauri-apps/plugin-shell": "^2.3.1",
+    "mp4-muxer": "^5.2.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.9.1",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "@vitejs/plugin-react": "^5.0.4",
+    "electron": "^45.2.1",
+    "electron-builder": "^26.18.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9"
+  },
+  "build": {
+    "appId": "com.ultimateviz.studio",
+    "productName": "Ultimate Visualization Studio",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "artifactName": "${name}-${version}-${arch}.${ext}",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "Ultimate Visualization Studio",
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}

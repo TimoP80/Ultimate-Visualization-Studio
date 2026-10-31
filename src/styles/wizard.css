@@ -1,0 +1,1335 @@
+/* =====================================================================
+   Visualization Wizard
+   Full-screen guided composition surface. Sits above the editor, uses the
+   same tokens and control styles, and never stretches the app layout.
+   ===================================================================== */
+
+.wiz-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 240;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-0);
+  color: var(--text-0);
+  animation: wiz-in 140ms ease-out;
+}
+
+@keyframes wiz-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Header ---------- */
+
+.wiz-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 54px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--bg-2), var(--bg-1));
+  flex: none;
+}
+
+.wiz-mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius);
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+}
+
+.wiz-title {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.wiz-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- Layout ---------- */
+
+.wiz-body {
+  display: grid;
+  grid-template-columns: 188px minmax(0, 1fr) 372px;
+  min-height: 0;
+  flex: 1;
+}
+
+.wiz-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 10px;
+  border-right: 1px solid var(--border);
+  background: var(--bg-1);
+  overflow-y: auto;
+}
+
+.wiz-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-1);
+  cursor: pointer;
+  text-align: left;
+}
+
+.wiz-nav-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-0);
+}
+
+.wiz-nav-item.active {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--text-0);
+}
+
+.wiz-nav-item.done .wiz-nav-index {
+  color: var(--ok);
+}
+
+.wiz-nav-index {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-3);
+  min-width: 16px;
+}
+
+.wiz-nav-label {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.wiz-nav-foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 2px 4px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.wiz-progress {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--bg-3);
+  overflow: hidden;
+}
+
+.wiz-progress span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--violet));
+  transition: width 160ms ease-out;
+}
+
+/* ---------- Main column ---------- */
+
+.wiz-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-0);
+}
+
+.wiz-main-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 22px 12px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.wiz-main-head h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.wiz-main-head p {
+  margin: 2px 0 0;
+  max-width: 720px;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+.wiz-step-eyebrow {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.wiz-main-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 22px 26px;
+}
+
+.wiz-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 22px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-1);
+  flex: none;
+}
+
+.wiz-footer .hint {
+  flex: 1;
+}
+
+.wiz-error {
+  margin: 0 22px 10px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  background: rgba(248, 113, 113, 0.1);
+  color: #fca5a5;
+  font-size: var(--fs-sm);
+}
+
+/* ---------- Side panel ---------- */
+
+.wiz-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-left: 1px solid var(--border);
+  background: var(--bg-1);
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.wiz-side-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-2);
+}
+
+.wiz-side-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: var(--fs-sm);
+}
+
+/* ---------- Shared bits ---------- */
+
+.wiz-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wiz-step-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.wiz-step-heading h2 {
+  margin: 0;
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.wiz-step-heading p {
+  margin: 0;
+  max-width: 680px;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+.wiz-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 13px 15px 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-1);
+}
+
+.wiz-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 20px;
+}
+
+.wiz-panel-head h3 {
+  margin: 0;
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+.wiz-help {
+  margin: 2px 0 0;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--text-3);
+}
+
+.wiz-notice {
+  padding: 8px 11px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  border-left-width: 2px;
+  background: var(--bg-2);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--text-1);
+}
+.wiz-notice.info {
+  border-left-color: var(--accent);
+}
+.wiz-notice.warn {
+  border-left-color: var(--warn);
+  background: rgba(251, 191, 36, 0.05);
+}
+.wiz-notice.error {
+  border-left-color: var(--danger);
+  background: rgba(248, 113, 113, 0.07);
+}
+.wiz-notice.ok {
+  border-left-color: var(--ok);
+}
+
+.badge-soft {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 7px;
+  border-radius: 99px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-3);
+  color: var(--text-2);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: default;
+}
+.badge-soft.ok {
+  border-color: rgba(52, 211, 153, 0.4);
+  color: var(--ok);
+  background: rgba(52, 211, 153, 0.08);
+}
+
+/* ---------- Cards ---------- */
+
+.wiz-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-2);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 120ms, background 120ms, transform 120ms;
+}
+
+.wiz-card:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-3);
+}
+
+.wiz-card.selected {
+  border-color: var(--accent-line);
+  box-shadow: inset 0 0 0 1px var(--accent-line);
+  background: color-mix(in srgb, var(--accent-soft) 55%, var(--bg-2));
+}
+
+.wiz-card:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.wiz-card-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.wiz-card-wrap > .wiz-card {
+  flex: 1;
+}
+
+.wiz-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.wiz-card-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-0);
+}
+
+.wiz-card-sub {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.wiz-card-desc {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wiz-rec {
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 99px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+}
+.wiz-rec.sup {
+  color: var(--violet);
+  background: var(--violet-soft);
+  border-color: var(--violet-line);
+}
+
+.wiz-star {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(8, 9, 11, 0.72);
+  color: var(--text-2);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+.wiz-star:hover {
+  color: var(--text-0);
+}
+.wiz-star.on {
+  color: var(--warn);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.wiz-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+.wiz-lock:hover {
+  border-color: var(--border-strong);
+  color: var(--text-0);
+}
+.wiz-lock.locked {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.wiz-segmented {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.wiz-segmented button {
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+.wiz-segmented button:hover {
+  color: var(--text-0);
+  background: var(--bg-hover);
+}
+.wiz-segmented button.on {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- Thumbnails ---------- */
+
+.wiz-thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+}
+
+.wiz-thumb-ring {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 42%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1.5px solid;
+  opacity: 0.8;
+}
+
+.wiz-thumb-bars {
+  position: absolute;
+  inset: auto 12% 12% 12%;
+  height: 34%;
+  display: flex;
+  align-items: flex-end;
+  gap: 4%;
+}
+
+.wiz-thumb-bars i {
+  flex: 1;
+  border-radius: 1px 1px 0 0;
+  display: block;
+}
+
+.wiz-thumb--template {
+  display: grid;
+  place-items: center;
+}
+
+.wiz-template-bars {
+  position: absolute;
+  inset: 22% 10% 18%;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.wiz-template-bars i {
+  flex: 1;
+  border-radius: 1px;
+  opacity: 0.85;
+}
+
+.wiz-thumb-glow {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+}
+
+.wiz-palette-strip {
+  display: flex;
+  gap: 3px;
+  height: 7px;
+  width: 100%;
+}
+.wiz-palette-strip i {
+  flex: 1;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ---------- Stats ---------- */
+
+.wiz-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 6px;
+}
+
+.wiz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 7px 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-soft);
+  background: var(--bg-2);
+}
+
+.wiz-stat-label {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-weight: 600;
+}
+
+.wiz-stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  color: var(--text-0);
+}
+
+/* ---------- Audio step ---------- */
+
+.wiz-audio-drop {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-2);
+  transition: border-color 120ms, background 120ms;
+}
+.wiz-audio-drop.over {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.wiz-audio-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-3);
+  color: var(--accent);
+}
+
+.wiz-audio-name {
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+.wiz-waveform {
+  width: 100%;
+  height: 76px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-soft);
+  background: var(--bg-1);
+  overflow: hidden;
+}
+.wiz-waveform canvas {
+  display: block;
+}
+
+.wiz-inline-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wiz-bpm {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1.1;
+}
+
+/* ---------- Grids ---------- */
+
+.wiz-style-grid,
+.wiz-template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(186px, 1fr));
+  gap: 10px;
+}
+
+.wiz-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  gap: 8px;
+}
+
+.wiz-color-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 4px 14px;
+}
+
+.wiz-field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 8px 12px;
+}
+
+.wiz-two-col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 6px 16px;
+}
+
+.wiz-type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 8px;
+}
+
+.wiz-type-card {
+  min-height: 66px;
+  justify-content: space-between;
+}
+
+.wiz-type-sample {
+  display: block;
+  font-size: 15px;
+  color: var(--text-0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wiz-profile-row,
+.wiz-intensity-row,
+.wiz-preset-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+  gap: 8px;
+}
+
+.wiz-profile-card,
+.wiz-intensity-card,
+.wiz-output-card {
+  gap: 4px;
+}
+
+.wiz-text-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wiz-text-field .input {
+  width: 100%;
+}
+
+/* ---------- Templates ---------- */
+
+.wiz-template-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 6px 2px 0;
+}
+
+.wiz-chip {
+  padding: 2px 8px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-size: 10px;
+  cursor: pointer;
+}
+.wiz-chip:hover:not(:disabled) {
+  color: var(--text-0);
+  border-color: var(--border-strong);
+}
+.wiz-chip.on {
+  color: var(--violet);
+  border-color: var(--violet-line);
+  background: var(--violet-soft);
+}
+.wiz-chip:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.wiz-template-card.is-support {
+  border-color: var(--violet-line);
+}
+
+/* ---------- Appearance ---------- */
+
+.wiz-grade-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.wiz-grade-preview .wiz-palette-strip {
+  flex: 1;
+  height: 12px;
+}
+
+.wiz-bg-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wiz-bg-sample {
+  width: 60px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-soft);
+  flex: none;
+}
+
+/* ---------- Reactivity ---------- */
+
+.wiz-route-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wiz-route {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  border: 1px solid var(--border-soft);
+  font-size: var(--fs-sm);
+}
+
+.wiz-route-source {
+  min-width: 58px;
+  font-weight: 600;
+  color: var(--text-0);
+}
+
+.wiz-route-arrow {
+  color: var(--accent);
+}
+
+/* ---------- Branding ---------- */
+
+.wiz-branding-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 26px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.wiz-branding-title {
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.wiz-branding-sub {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.wiz-branding-meta {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+/* ---------- Effects ---------- */
+
+.wiz-effect-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 6px;
+}
+
+.wiz-effect {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  text-align: left;
+  cursor: pointer;
+}
+.wiz-effect:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-3);
+}
+.wiz-effect.on {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+.wiz-effect:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.wiz-effect-name {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.wiz-effect.on .wiz-effect-name {
+  color: var(--accent);
+}
+
+.wiz-effect-desc {
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--text-3);
+}
+
+/* ---------- Scenes ---------- */
+
+.wiz-section-strip {
+  display: flex;
+  gap: 3px;
+  min-height: 54px;
+}
+
+.wiz-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2px;
+  padding: 5px 7px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-3);
+  overflow: hidden;
+  min-width: 40px;
+}
+
+.wiz-section.intro {
+  border-color: rgba(34, 211, 238, 0.45);
+  background: rgba(34, 211, 238, 0.08);
+}
+.wiz-section.main {
+  border-color: rgba(139, 92, 246, 0.45);
+  background: rgba(139, 92, 246, 0.09);
+}
+.wiz-section.outro {
+  border-color: rgba(244, 114, 182, 0.4);
+  background: rgba(244, 114, 182, 0.07);
+}
+.wiz-section.section {
+  border-color: var(--border-strong);
+}
+
+.wiz-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wiz-section-time {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-3);
+}
+
+.wiz-section-legend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.wiz-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 4px;
+  background: var(--border-strong);
+}
+.wiz-dot.intro {
+  background: var(--accent);
+}
+.wiz-dot.main {
+  background: var(--violet);
+}
+.wiz-dot.outro {
+  background: #f472b6;
+}
+
+/* ---------- Output ---------- */
+
+.wiz-aspect-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wiz-aspect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  cursor: pointer;
+}
+.wiz-aspect:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+.wiz-aspect.on {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.wiz-aspect-box {
+  width: 26px;
+  max-height: 30px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  color: var(--text-2);
+  opacity: 0.9;
+}
+.wiz-aspect.on .wiz-aspect-box {
+  color: var(--accent);
+}
+
+.wiz-aspect-label {
+  font-size: 10px;
+  color: var(--text-2);
+}
+
+/* ---------- Review ---------- */
+
+.wiz-summary {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.wiz-summary-art {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-1);
+}
+
+.wiz-summary-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.wiz-summary-stats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.wiz-summary-rows {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-1);
+}
+
+.wiz-summary-row {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--border-soft);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.wiz-summary-row:last-child {
+  border-bottom: 0;
+}
+.wiz-summary-row:hover {
+  background: var(--bg-hover);
+}
+
+.wiz-summary-label {
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-weight: 600;
+}
+
+.wiz-summary-value {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.wiz-summary-main {
+  font-size: var(--fs-sm);
+  color: var(--text-0);
+}
+
+.wiz-summary-hint {
+  font-size: 10px;
+  color: var(--text-3);
+}
+
+.wiz-summary-edit {
+  font-size: 10px;
+  color: var(--accent);
+  opacity: 0;
+}
+.wiz-summary-row:hover .wiz-summary-edit {
+  opacity: 1;
+}
+
+/* ---------- Live preview ---------- */
+
+.wiz-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wiz-preview-frame {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #000;
+  max-height: 42vh;
+}
+
+.wiz-preview-frame canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.wiz-preview-badge {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  border-radius: 99px;
+  background: rgba(8, 9, 11, 0.7);
+  border: 1px solid var(--border);
+  color: var(--text-1);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+
+.wiz-preview-badge .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 6px var(--ok);
+}
+
+.wiz-preview-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px;
+  text-align: center;
+  background: rgba(8, 9, 11, 0.86);
+  font-size: 10px;
+  color: var(--text-2);
+}
+
+.wiz-preview-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- Presets ---------- */
+
+.wiz-presets {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-2);
+}
+
+.wiz-presets-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wiz-presets-head h3 {
+  margin: 0;
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+.wiz-presets-save {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.wiz-presets-save .input {
+  flex: 1;
+  min-width: 120px;
+}
+
+.wiz-preset-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.wiz-preset-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 5px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-soft);
+  background: var(--bg-1);
+}
+
+.wiz-preset-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  padding: 2px 3px;
+  border: 0;
+  background: transparent;
+  color: var(--text-0);
+  font-size: var(--fs-sm);
+  text-align: left;
+  cursor: pointer;
+}
+.wiz-preset-name:hover {
+  color: var(--accent);
+}
+
+.wiz-preset-actions {
+  display: flex;
+  gap: 1px;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1280px) {
+  .wiz-body {
+    grid-template-columns: 168px minmax(0, 1fr) 320px;
+  }
+  .wiz-summary {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1080px) {
+  .wiz-body {
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+  .wiz-side {
+    display: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .wiz-nav {
+    display: none;
+  }
+  .wiz-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .wiz-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

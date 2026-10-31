@@ -1,0 +1,147 @@
+/* =====================================================================
+   Ultimate Visualization Studio — design tokens & base styles
+   Charcoal / near-black surfaces, restrained cyan + violet accents.
+   ===================================================================== */
+
+:root {
+  /* Surfaces (near-black charcoal ramp) */
+  --bg-0: #08090b;
+  --bg-1: #0e1013;
+  --bg-2: #14171b;
+  --bg-3: #1a1e24;
+  --bg-4: #22262e;
+  --bg-hover: #1e232a;
+  --bg-active: #262c35;
+
+  /* Borders */
+  --border: #23272e;
+  --border-soft: #1b1f25;
+  --border-strong: #333a44;
+
+  /* Text */
+  --text-0: #e8ebf0;
+  --text-1: #a3abb8;
+  --text-2: #6d7684;
+  --text-3: #4a515c;
+
+  /* Accents */
+  --accent: #22d3ee;
+  --accent-strong: #06b6d4;
+  --accent-soft: rgba(34, 211, 238, 0.14);
+  --accent-line: rgba(34, 211, 238, 0.35);
+  --violet: #8b5cf6;
+  --violet-soft: rgba(139, 92, 246, 0.14);
+  --violet-line: rgba(139, 92, 246, 0.35);
+
+  /* Semantic */
+  --ok: #34d399;
+  --warn: #fbbf24;
+  --danger: #f87171;
+  --record: #ef4444;
+
+  /* Metrics */
+  --radius: 6px;
+  --radius-sm: 4px;
+  --radius-lg: 10px;
+  --toolbar-h: 46px;
+  --status-h: 26px;
+  --row-h: 28px;
+
+  --font-ui: 'Inter', 'InterVariable', -apple-system, BlinkMacSystemFont,
+    'Segoe UI Variable Text', 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', 'SF Mono', Consolas,
+    'Liberation Mono', monospace;
+
+  --fs-xs: 10.5px;
+  --fs-sm: 11.5px;
+  --fs-md: 12.5px;
+  --fs-lg: 14px;
+  --fs-xl: 17px;
+
+  --shadow-panel: 0 8px 28px rgba(0, 0, 0, 0.5);
+  --shadow-pop: 0 12px 40px rgba(0, 0, 0, 0.65);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-0);
+  color: var(--text-0);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  user-select: none;
+  cursor: default;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* ---------- Scrollbars ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #2b313a;
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a424e;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ---------- Focus ---------- */
+:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ---------- Typography helpers ---------- */
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+.label {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  font-weight: 600;
+}
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
